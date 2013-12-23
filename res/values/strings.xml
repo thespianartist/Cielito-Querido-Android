@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">"Cielito Querido"</string>
+    <string name="action_settings">Settings</string>
+    
+    <string name="action_bar_title">Cielito Querido</string>
+    
+    <string name="drawer_open">Opciones</string>
+    <string name="drawer_close">Cielito Querido</string>
+    
+     <string-array name="options">
+        <item>Cerca de ti</item>
+        <item>Sucursales</item>
+        <item>Redes Sociales</item>
+        <item>Acerca de esta App</item>
+    </string-array>
+    
+    <string-array name="navigation_iconos">
+        <item>@drawable/ic_action_location_found</item>
+        <item>@drawable/ic_action_directions</item>
+        <item>@drawable/ic_action_share</item>
+        <item>@drawable/ic_action_help</item>
+    </string-array>
+    
+    
+ 
+</resources>
