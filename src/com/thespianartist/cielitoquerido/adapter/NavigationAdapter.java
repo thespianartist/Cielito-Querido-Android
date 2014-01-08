@@ -2,9 +2,6 @@ package com.thespianartist.cielitoquerido.adapter;
 
 import java.util.ArrayList;
 
-import com.thespianartist.cielitoquerido.R;
-import com.thespianartist.cielitoquerido.rowmenu.ItemMenu;
-
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -14,17 +11,19 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.thespianartist.cielitoquerido.R;
+import com.thespianartist.cielitoquerido.models.ItemMenu;
+
 public class NavigationAdapter extends BaseAdapter{
 
 	private Activity activity;
-			ArrayList<ItemMenu> arrayItem;
+	private	ArrayList<ItemMenu> arrayItem;
 			
 	
 	public NavigationAdapter(Activity activity, ArrayList<ItemMenu> listArray){
 		super();
 		this.activity = activity;
 		this.arrayItem = listArray;
-		
 	}
 		
 	@Override
@@ -42,7 +41,7 @@ public class NavigationAdapter extends BaseAdapter{
 		return arg0;
 	}
 	
-	public static class Fila{
+	public static class Holder{
 		TextView titulo_item;
 		ImageView icono;
 	}
@@ -50,33 +49,31 @@ public class NavigationAdapter extends BaseAdapter{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
-		Fila view;
+		Holder holder;
 		LayoutInflater inflator = activity.getLayoutInflater();
-//		Typeface tf = Typeface.createFromAsset(activity.getAssets(), "BadScript-Regular.ttf");
+		Typeface tf = Typeface.createFromAsset(activity.getAssets(), "Pacifico.ttf");
 	
 		
 		if(convertView == null ){
-			view = new Fila();
+			holder = new Holder();
 			ItemMenu item = arrayItem.get(position);
 			convertView = inflator.inflate(R.layout.drawer_list_item, null);
 			
 			//Para el titulo
 			
-			view.titulo_item = (TextView) convertView.findViewById(R.id.title_item);
-//			view.titulo_item.setTypeface(tf);
-			view.titulo_item.setText(item.getTitulo());
+			holder.titulo_item = (TextView) convertView.findViewById(R.id.title_item);
+			holder.titulo_item.setTypeface(tf);
+			holder.titulo_item.setText(item.getTitulo());
 			
 			//Para la imagen
 			
-			view.icono = (ImageView) convertView.findViewById(R.id.icon);
-			view.icono.setImageResource(item.getIcono());
+			holder.icono = (ImageView) convertView.findViewById(R.id.icon);
+			holder.icono.setImageResource(item.getIcono());
+			convertView.setTag(holder);	
 			
-			convertView.setTag(view);	
 		}else{
-			
-			view = (Fila) convertView.getTag();
+			holder = (Holder) convertView.getTag();
 		}
-		
 		return convertView;
 	}
 	
