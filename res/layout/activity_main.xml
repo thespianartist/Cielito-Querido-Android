@@ -6,8 +6,8 @@
     
      
        <FrameLayout
-        android:background="@layout/background_repeat"
         android:id="@+id/frame_container"
+    	android:background="@layout/background_repeat"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -2,6 +2,7 @@ package com.thespianartist.cielitoquerido;
 
 import java.util.ArrayList;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -12,16 +13,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.thespianartist.cielitoquerido.adapter.NavigationAdapter;
-import com.thespianartist.cielitoquerido.fragments.CieloFragment;
+import com.thespianartist.cielitoquerido.adapters.NavigationAdapter;
+import com.thespianartist.cielitoquerido.fragments.AboutMeFragment;
 import com.thespianartist.cielitoquerido.fragments.MapFragment;
+import com.thespianartist.cielitoquerido.fragments.SucursalesFragment;
 import com.thespianartist.cielitoquerido.models.ItemMenu;
+import com.thespianartist.cielitoquerido.utils.RedesOptionItem;
 
 
 public class MainActivity extends FragmentActivity {
@@ -35,7 +39,6 @@ public class MainActivity extends FragmentActivity {
     private NavigationAdapter	navigationAdapter;
 	private String	close;
 	private View	header;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +51,7 @@ public class MainActivity extends FragmentActivity {
 		drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 		close = getResources().getString(R.string.drawer_close);
-		open  = getResources().getString(R.string.drawer_open);
+		
 		
 		getActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + close + "</font>"));
 		header = getLayoutInflater().inflate(R.layout.header, null);
@@ -81,10 +84,6 @@ public class MainActivity extends FragmentActivity {
 	     getActionBar().setDisplayHomeAsUpEnabled(true);
 	     getActionBar().setHomeButtonEnabled(true);   
 	     
-	     
-	     Fragment fragment = new MapFragment();
-	     FragmentManager fragmentManager = getSupportFragmentManager();
-         fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
 	}
 	    
 		 
@@ -105,7 +104,7 @@ public class MainActivity extends FragmentActivity {
 		if(drawerToggle.onOptionsItemSelected(item)){
 			return true;
 		}
-			return super.onOptionsItemSelected(item);
+		 return super.onOptionsItemSelected(item);
 	}
 
 
@@ -127,22 +126,23 @@ public class MainActivity extends FragmentActivity {
 	     			break;
 				
 	     			case 1:
-		                   fragment = new MapFragment();
+		                 fragment = new MapFragment();
 		                 getActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + "Cerca de ti" + "</font>"));
 	     			break;
 				
 	     			case 2:
-	     					fragment = new CieloFragment();
-	     				 getActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + "Sucursales" + "</font>"));
+	     					fragment = new SucursalesFragment();
+	     					getActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + "Sucursales" + "</font>"));
 	     			break;
 				
 	     			case 3:
-	     					fragment = new CieloFragment();
+	     				 RedesOptionItem redesShow = new  RedesOptionItem(MainActivity.this);
+	     				 redesShow.viewSocialWindow();
 	     				 getActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + "Redes Sociales" + "</font>"));
 	     			break;
 	     		
 	     			case 4:
-	     					fragment = new CieloFragment();
+	     					fragment = new AboutMeFragment();
 	     				getActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + "Acerca de" + "</font>"));
 	     			break;
 	     		
@@ -160,6 +160,18 @@ public class MainActivity extends FragmentActivity {
 	     		drawerList.setItemChecked(position, true);
 	     		drawerLayout.closeDrawer(drawerList);	     		
 		}
+
+		@Override
+		protected void onResume() {
+			super.onResume();
+		     Fragment fragment = new MapFragment();
+		     FragmentManager fragmentManager = getSupportFragmentManager();
+	         fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+	     	 drawerLayout.closeDrawer(drawerList);
+		}
+		
+
+
 }
 
 	

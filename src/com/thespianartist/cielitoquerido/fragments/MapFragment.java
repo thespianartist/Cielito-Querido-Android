@@ -1,14 +1,23 @@
 package com.thespianartist.cielitoquerido.fragments;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -19,34 +28,34 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.thespianartist.cielitoquerido.MapPlaces;
 import com.thespianartist.cielitoquerido.R;
-import com.thespianartist.cielitoquerido.models.CieloMarker;
+import com.thespianartist.cielitoquerido.data.MapPlaces;
+import com.thespianartist.cielitoquerido.utils.NearestLocation;
 
-	public class MapFragment extends Fragment implements LocationListener {
+	public class MapFragment extends Fragment implements LocationListener{
 
 		private MapView mapView;
 		private GoogleMap map;
-		private LatLng	actualLocation;
+		private LatLng	nearestLocationPlace;
 		private LocationManager	service;
 		private String provider;
-		private Float howLong;
 		private MapPlaces mapPlaces;
-		private CieloMarker  cieloMarker;
+		private Location location;
 		
-
+		
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 			
 			View v = inflater.inflate(R.layout.map_fragment, container, false);
 			
 			mapView = (MapView) v.findViewById(R.id.mapview);
 			mapView.onCreate(savedInstanceState);
-			
+	
 			map = mapView.getMap();
-			map.getUiSettings().setMyLocationButtonEnabled(false);
-			map.getUiSettings().setCompassEnabled(false);
+			map.getUiSettings().setMyLocationButtonEnabled(true);
+			map.getUiSettings().setCompassEnabled(true);
 			map.getUiSettings().setZoomControlsEnabled(false);
 			map.setMyLocationEnabled(true);
+			
 					
 			try {
 				MapsInitializer.initialize(this.getActivity());
@@ -61,51 +70,67 @@ import com.thespianartist.cielitoquerido.models.CieloMarker;
 					map.addMarker(marker);
 				}
 			}else{
-				Toast.makeText(getActivity().getBaseContext(),"No se pudieron agregar los lugares en el mapa", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getActivity().getBaseContext(),"Tuvimos un error con tu petici—n, lo sentimos ):", Toast.LENGTH_SHORT).show();
 			}
 			return v;
 		}
 
+		
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
-			
-			Location location;
-			
+					
 			service = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 	        boolean enabledGPS = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
+	        boolean enabledNW = service.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+	       
 	      
-	        if (!enabledGPS){
-	        	provider= LocationManager.NETWORK_PROVIDER;
+	        if (enabledGPS==true){
+	        	provider= LocationManager.GPS_PROVIDER;
+	        	  location = service.getLastKnownLocation(provider);
+			}else if(enabledNW==true){
+				provider= LocationManager.NETWORK_PROVIDER;
+				  location = service.getLastKnownLocation(provider);
 			}else{
-				provider= LocationManager.GPS_PROVIDER;
+				showDialog();
 			}
 	
-	        location = service.getLastKnownLocation(provider);
-	        
 	        if (location != null) {
-	        	cieloMarker= new CieloMarker();
-	        	Location locationTo = new Location("punto a medir");
-	        	
-	        	onLocationChanged(location);
-	        	cieloMarker = mapPlaces.getCielomarkers().get(0);
-	        	
-	        	locationTo.setLongitude(cieloMarker.getPosition().longitude);
-	        	locationTo.setLatitude(cieloMarker.getPosition().latitude);
-	        	
-	        	howLong = location.distanceTo(locationTo);
-	        	
-	        	Toast.makeText(getActivity().getBaseContext(),"distancia en metros"+ howLong.toString(),Toast.LENGTH_SHORT).show();
-	          
+	        		NearestLocation nearestLocation = new NearestLocation();
+	        		nearestLocationPlace= nearestLocation.getNearestDistance(location);
+	      
+	 
+	        		final Dialog dialog = new Dialog(getActivity());
+	        		dialog.setContentView(R.layout.found_layout);
+	        		dialog.setTitle("Lo mas cercano es :");
+	            
+	        		TextView sucursalTitulo = (TextView) dialog.findViewById(R.id.sucursal_titulo);
+	        		TextView sucursalDistancia = (TextView) dialog.findViewById(R.id.sucursal_distancia);
+	        		Button   sucursalButtonOK = (Button) dialog.findViewById(R.id.surcursal_button);
+	            
+	        		Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "Pacifico.ttf");
+	        		sucursalTitulo.setTypeface(tf);
+	        		
+	        		 
+	        		sucursalTitulo.setText(NearestLocation.nearestName);
+	        		sucursalDistancia.setText("A "+NearestLocation.distance.toString()+" metros de distancia");
+	        		dialog.show(); 
+	            
+	        		sucursalButtonOK.setOnClickListener(new OnClickListener() {
+	        			@Override
+						public void onClick(View arg0) {
+	        				dialog.cancel();
+	        			}
+	        		});
+	  
 	        }else {
-	        	Toast.makeText(getActivity().getBaseContext(), "No pudimos obtener tu localizacion",Toast.LENGTH_SHORT).show();
+	        		Toast.makeText(getActivity().getBaseContext(), "Lo sentimos, No pudimos obtener tu localizacion ):",Toast.LENGTH_SHORT).show();
+	        		Toast.makeText(getActivity().getBaseContext(), "Aun asi puedes ver todas las sucursales en el Mapa",Toast.LENGTH_LONG).show();
 	        }
-	        
-	        if(actualLocation!=null ){
-	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(cieloMarker.getPosition(),16);
-			map.animateCamera(cameraUpdate);
-	        }else{
-	        	Toast.makeText(getActivity().getBaseContext(), "Active los datos o GPS",Toast.LENGTH_SHORT).show();
+
+	        if(nearestLocationPlace!=null ){
+	        		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(nearestLocationPlace,15);
+	        		map.animateCamera(cameraUpdate);
 	        }
 		
 		}
@@ -130,9 +155,7 @@ import com.thespianartist.cielitoquerido.models.CieloMarker;
 
 		@Override
 		public void onLocationChanged(Location location) {
-			 double lat =  location.getLatitude();
-		     double lng = location.getLongitude();
-		     actualLocation= new LatLng(lat, lng);
+			
 		}
 		
 		@Override
@@ -163,6 +186,26 @@ import com.thespianartist.cielitoquerido.models.CieloMarker;
 			
 		}
 		
+		public void showDialog(){
+		    AlertDialog.Builder alertDialog  = new AlertDialog.Builder(getActivity());
+	        alertDialog.setTitle("Requerimos de su localizacion la cual esta deshabilitada");
+	        alertDialog.setMessage("ÀDesea ir a los ajustes para Habilitarlo?");
+	        
+	        alertDialog.setPositiveButton("Ir a Ajustes :D", new DialogInterface.OnClickListener() {
+	            public void onClick(DialogInterface dialog,int which) {
+	                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+	                getActivity().startActivity(intent);
+	            }
+	        });
+	 
+	        alertDialog.setNegativeButton("No, Gracias ):", new DialogInterface.OnClickListener() {
+	            public void onClick(DialogInterface dialog, int which) {
+	            dialog.cancel();
+	            }
+	        }); 
+	 
+	        alertDialog.show(); 
+		}
 		
  }
 

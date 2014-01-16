@@ -1,4 +1,4 @@
-package com.thespianartist.cielitoquerido.adapter;
+package com.thespianartist.cielitoquerido.adapters;
 
 import java.util.ArrayList;
 

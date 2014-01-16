@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingTop="10dp"
+        android:text="Cielito Querido Finder Beta"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ImageView
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="5dp"
+        android:layout_width="93dp"
+        android:layout_height="119dp"
+        android:src="@drawable/ic_launcher" />
+    
+     <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="center_horizontal"
+        android:text="Esta es un App no Oficial por lo cual no tiene relación alguna con CIELITO® la empresa, algunos contenidos son propiededad de CIELITO®" />
+
+    <TextView
+        android:layout_margin="5dp"
+        android:layout_width="fill_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:text="Con Cariño por :"/>
+
+    <ImageView
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="5dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/gdgipn" />
+    
+        <TextView
+        android:layout_margin="5dp"
+        android:layout_width="fill_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:text="Developer :"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:text="Uriel Ramirez   @thespianartist" />
+  
+    <TextView
+        android:layout_width="fill_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:text="      topzihxc@gmail.com" />
+
+</LinearLayout>
