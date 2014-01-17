@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
@@ -24,9 +25,11 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.thespianartist.cielitoquerido.R;
 import com.thespianartist.cielitoquerido.data.MapPlaces;
@@ -42,8 +45,7 @@ import com.thespianartist.cielitoquerido.utils.NearestLocation;
 		private String provider;
 		private MapPlaces mapPlaces;
 		private Location location;
-		
-		
+	
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 			
 			View v = inflater.inflate(R.layout.map_fragment, container, false);
@@ -64,12 +66,46 @@ import com.thespianartist.cielitoquerido.utils.NearestLocation;
 				e.printStackTrace();
 			}
 			
+			
 			mapPlaces = new MapPlaces();
 			
 			if(mapPlaces.getMarkers() != null){
 				for(MarkerOptions marker: mapPlaces.getMarkers()){
 					map.addMarker(marker);
 				}
+				
+				map.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+								
+					@Override
+					public void onInfoWindowClick(final Marker arg0) {
+					
+						 AlertDialog.Builder alertDialog  = new AlertDialog.Builder(getActivity());
+					     alertDialog.setTitle("Ver Alrededores ");
+					     alertDialog.setMessage("ÀDesea ver que queda cerca de aqui?");
+					        
+					     alertDialog.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+					            public void onClick(DialogInterface dialog,int which) {
+					            	Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("google.streetview:cbll="+
+											                    arg0.getPosition().latitude+","+arg0.getPosition().longitude+"&cbp=1,90,,0,1.0&mz=20"));
+					            
+					            	getActivity().startActivity(i);
+					            }
+					        });
+					 
+					        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					            public void onClick(DialogInterface dialog, int which) {
+					            dialog.cancel();
+					            }
+					        }); 
+					 
+					        alertDialog.show(); 
+					}
+					
+					
+				
+					
+			    });
+				
 			}else{
 				Toast.makeText(getActivity().getBaseContext(),"Tuvimos un error con tu petici—n, lo sentimos ):", Toast.LENGTH_SHORT).show();
 			}
@@ -95,12 +131,13 @@ import com.thespianartist.cielitoquerido.utils.NearestLocation;
 			}else{
 				showDialog();
 			}
+	        onProviderEnabled(provider);
 	
 	        if (location != null) {
 	        		NearestLocation nearestLocation = new NearestLocation();
 	        		nearestLocationPlace= nearestLocation.getNearestDistance(location);
 	      
-	 
+	        		setNearestLocationPlace(nearestLocationPlace);
 	        		final Dialog dialog = new Dialog(getActivity());
 	        		dialog.setContentView(R.layout.found_layout);
 	        		dialog.setTitle("Lo mas cercano es :");
@@ -123,6 +160,7 @@ import com.thespianartist.cielitoquerido.utils.NearestLocation;
 	        				dialog.cancel();
 	        			}
 	        		});
+	        		
 	  
 	        }else {
 	        		Toast.makeText(getActivity().getBaseContext(), "Lo sentimos, No pudimos obtener tu localizacion ):",Toast.LENGTH_SHORT).show();
@@ -133,17 +171,12 @@ import com.thespianartist.cielitoquerido.utils.NearestLocation;
 	        		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(nearestLocationPlace,15);
 	        		map.animateCamera(cameraUpdate);
 	        }
-		
 		}
 
 		@Override
 		public void onResume() {
 			super.onResume();
 			mapView.onResume();
-			 if(nearestLocationPlace!=null ){
-	        		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(nearestLocationPlace,15);
-	        		map.animateCamera(cameraUpdate);
-	        }
 		}
  
 		@Override
@@ -171,28 +204,30 @@ import com.thespianartist.cielitoquerido.utils.NearestLocation;
 		public void onPause() {
 			super.onPause();
 			mapView.onPause();
+		}
+		
+
+		@Override
+		public void onDetach() {
+			super.onDetach();
 			service.removeUpdates(this);
 		}
-
-
+	
 		@Override
 		public void onProviderDisabled(String arg0) {
 		
-			
 		}
 
 
 		@Override
 		public void onProviderEnabled(String arg0) {
-			
-			
+	
 		}
 
 
 		@Override
 		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-			
-			
+			 
 		}
 		
 		public void showDialog(){
@@ -202,8 +237,7 @@ import com.thespianartist.cielitoquerido.utils.NearestLocation;
 	        
 	        alertDialog.setPositiveButton("Ir a Ajustes :D", new DialogInterface.OnClickListener() {
 	            public void onClick(DialogInterface dialog,int which) {
-	                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-	                getActivity().startActivity(intent);
+	            	startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 	            }
 	        });
 	 
@@ -216,5 +250,25 @@ import com.thespianartist.cielitoquerido.utils.NearestLocation;
 	        alertDialog.show(); 
 		}
 		
+		public LatLng getNearestLocationPlace() {
+			return nearestLocationPlace;
+		}
+
+
+		public void setNearestLocationPlace(LatLng nearestLocationPlace) {
+			this.nearestLocationPlace = nearestLocationPlace;
+		}
+
+
+		@Override
+		public void onSaveInstanceState(Bundle outState) {
+			super.onSaveInstanceState(outState);
+			
+		}
+
+
+
+		
+
  }
 

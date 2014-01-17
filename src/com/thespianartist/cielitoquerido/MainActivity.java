@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -81,11 +82,7 @@ public class MainActivity extends FragmentActivity {
 	     };drawerLayout.setDrawerListener(drawerToggle); 
 	     getActionBar().setDisplayHomeAsUpEnabled(true);
 	     getActionBar().setHomeButtonEnabled(true);   
-	     
-	     Fragment fragment = new MapFragment();
-	     FragmentManager fragmentManager = getSupportFragmentManager();
-         fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-     	 drawerLayout.closeDrawer(drawerList);
+	    
 	     
 	}
 	    
@@ -163,19 +160,24 @@ public class MainActivity extends FragmentActivity {
 	     		drawerList.setItemChecked(position, true);
 	     		drawerLayout.closeDrawer(drawerList);	     		
 		}
-
-//		@Override
-//		protected void onResume() {
-//			super.onResume();
-//		     Fragment fragment = new MapFragment();
-//		     FragmentManager fragmentManager = getSupportFragmentManager();
-//	         fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-//	     	 drawerLayout.closeDrawer(drawerList);
-//		}
-//		
-
-
+	
+		@Override
+		protected void onResume() {
+			super.onResume();
+		     Fragment fragment = new MapFragment();
+		     FragmentManager fragmentManager = getSupportFragmentManager();
+	         fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+	     	 drawerLayout.closeDrawer(drawerList);
+		}
+		
+		@Override
+		public boolean onKeyDown(int keyCode, KeyEvent event) {
+		    if (keyCode == KeyEvent.KEYCODE_BACK ) {
+		    	Toast.makeText(this, "Alaksjkaljs:", Toast.LENGTH_SHORT).show();
+		    }
+		    return super.onKeyDown(keyCode, event);
+		}
+		
 }
-
 	
 	

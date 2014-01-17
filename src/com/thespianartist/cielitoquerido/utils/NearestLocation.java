@@ -6,6 +6,7 @@ import java.util.HashMap;
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.thespianartist.cielitoquerido.data.MapPlaces;
 import com.thespianartist.cielitoquerido.models.CieloMarker;
 
@@ -20,6 +21,7 @@ public class NearestLocation {
 
 	public 	static Float distance;
 	public 	static String nearestName;
+	public 	static Marker nearestMarker;
 	
 	public LatLng getNearestDistance(Location location){
 		
@@ -45,7 +47,6 @@ public class NearestLocation {
 		distances = bubbleSort(distances);
 		distance = distances[0];
 		nearestName = resultsName.get(resultsDistance.get(distances[0]));
-		
 		return resultsDistance.get(distances[0]);
 	}
 	

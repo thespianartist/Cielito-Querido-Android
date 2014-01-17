@@ -164,9 +164,6 @@ import com.thespianartist.cielitoquerido.models.CieloMarker;
 		this.cielomarkers = cielomarkers;
 	}
 	
-	
 
-	
-	
 
 }
