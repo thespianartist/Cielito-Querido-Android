@@ -2,7 +2,6 @@ package com.thespianartist.cielitoquerido;
 
 import java.util.ArrayList;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -83,6 +81,11 @@ public class MainActivity extends FragmentActivity {
 	     };drawerLayout.setDrawerListener(drawerToggle); 
 	     getActionBar().setDisplayHomeAsUpEnabled(true);
 	     getActionBar().setHomeButtonEnabled(true);   
+	     
+	     Fragment fragment = new MapFragment();
+	     FragmentManager fragmentManager = getSupportFragmentManager();
+         fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+     	 drawerLayout.closeDrawer(drawerList);
 	     
 	}
 	    
@@ -161,15 +164,15 @@ public class MainActivity extends FragmentActivity {
 	     		drawerLayout.closeDrawer(drawerList);	     		
 		}
 
-		@Override
-		protected void onResume() {
-			super.onResume();
-		     Fragment fragment = new MapFragment();
-		     FragmentManager fragmentManager = getSupportFragmentManager();
-	         fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-	     	 drawerLayout.closeDrawer(drawerList);
-		}
-		
+//		@Override
+//		protected void onResume() {
+//			super.onResume();
+//		     Fragment fragment = new MapFragment();
+//		     FragmentManager fragmentManager = getSupportFragmentManager();
+//	         fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+//	     	 drawerLayout.closeDrawer(drawerList);
+//		}
+//		
 
 
 }

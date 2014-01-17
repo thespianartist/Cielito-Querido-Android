@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.thespianartist.cielitoquerido.R;
 import com.thespianartist.cielitoquerido.data.MapPlaces;
+import com.thespianartist.cielitoquerido.utils.MetersAndKilometers;
 import com.thespianartist.cielitoquerido.utils.NearestLocation;
 
 	public class MapFragment extends Fragment implements LocationListener{
@@ -110,10 +111,10 @@ import com.thespianartist.cielitoquerido.utils.NearestLocation;
 	            
 	        		Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "Pacifico.ttf");
 	        		sucursalTitulo.setTypeface(tf);
-	        		
+	        		MetersAndKilometers realDistance= new MetersAndKilometers(NearestLocation.distance);
 	        		 
 	        		sucursalTitulo.setText(NearestLocation.nearestName);
-	        		sucursalDistancia.setText("A "+NearestLocation.distance.toString()+" metros de distancia");
+	        		sucursalDistancia.setText(realDistance.getFormat());
 	        		dialog.show(); 
 	            
 	        		sucursalButtonOK.setOnClickListener(new OnClickListener() {
@@ -139,6 +140,10 @@ import com.thespianartist.cielitoquerido.utils.NearestLocation;
 		public void onResume() {
 			super.onResume();
 			mapView.onResume();
+			 if(nearestLocationPlace!=null ){
+	        		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(nearestLocationPlace,15);
+	        		map.animateCamera(cameraUpdate);
+	        }
 		}
  
 		@Override
@@ -155,6 +160,10 @@ import com.thespianartist.cielitoquerido.utils.NearestLocation;
 
 		@Override
 		public void onLocationChanged(Location location) {
+			 if(nearestLocationPlace!=null ){
+	        		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(nearestLocationPlace,15);
+	        		map.animateCamera(cameraUpdate);
+	        }
 			
 		}
 		

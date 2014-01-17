@@ -6,14 +6,14 @@
     android:orientation="vertical" >
 
     <ImageButton
-        android:id="@+id/facebook_image"
+        android:id="@+id/twitter_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:src="@drawable/twitter" />
 
     <ImageButton
-        android:id="@+id/twitter_image"
+        android:id="@+id/facebook_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
