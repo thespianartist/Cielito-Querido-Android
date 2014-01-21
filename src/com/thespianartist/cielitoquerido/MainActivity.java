@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Html;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -44,46 +43,14 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+     	//Only setup my NavigationDrawer 
+		setNavigtionDrawer();
 		
-		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		drawerList   = (ListView) findViewById(R.id.left_drawer);
-		drawerList.setOnItemClickListener(new DrawerItemClickListener());
-
-		close = getResources().getString(R.string.drawer_close);
-		
-		
-		getActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + close + "</font>"));
-		header = getLayoutInflater().inflate(R.layout.header, null);
-		drawerList.addHeaderView(header);
-	    
-	    iconos = getResources().obtainTypedArray(R.array.navigation_iconos);
-		options = getResources().getStringArray(R.array.options);
-		
-		itemsMenu = new ArrayList<ItemMenu>();
-        itemsMenu.add(new ItemMenu(options[0], iconos.getResourceId(0, -1)));
-        itemsMenu.add(new ItemMenu(options[1], iconos.getResourceId(1, -1)));
-        itemsMenu.add(new ItemMenu(options[2], iconos.getResourceId(2, -1)));
-        itemsMenu.add(new ItemMenu(options[3], iconos.getResourceId(3, -1)));
-
-        navigationAdapter = new NavigationAdapter(this, itemsMenu);
-        drawerList.setAdapter(navigationAdapter);
-	 
-	    drawerToggle = new ActionBarDrawerToggle(this,drawerLayout,R.drawable.ic_drawer,R.string.drawer_open,R.string.drawer_close){
-	       
-				     public void onDrawerClosed(View view) {
-//				    	 getActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + close + "</font>"));
-				                invalidateOptionsMenu(); 
-				     }
-				     
-				     public void onDrawerOpened(View drawerView) {
-//				    	 getActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + open + "</font>"));
-				                invalidateOptionsMenu(); 
-				     }
-	     };drawerLayout.setDrawerListener(drawerToggle); 
-	     getActionBar().setDisplayHomeAsUpEnabled(true);
-	     getActionBar().setHomeButtonEnabled(true);   
-	    
-	     
+		Fragment fragment = new MapFragment();
+	    FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();  
+     	drawerLayout.closeDrawer(drawerList);
+	
 	}
 	    
 		 
@@ -115,6 +82,7 @@ public class MainActivity extends FragmentActivity {
         }
     }
    
+    
 	private void selectItem(int position) {
 	     	Fragment fragment = null;
 	     	FragmentManager fragmentManager = getSupportFragmentManager();
@@ -161,23 +129,48 @@ public class MainActivity extends FragmentActivity {
 	     		drawerLayout.closeDrawer(drawerList);	     		
 		}
 	
-		@Override
-		protected void onResume() {
-			super.onResume();
-		     Fragment fragment = new MapFragment();
-		     FragmentManager fragmentManager = getSupportFragmentManager();
-	         fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-	     	 drawerLayout.closeDrawer(drawerList);
+		public void setNavigtionDrawer(){
+			
+			drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+			drawerList   = (ListView) findViewById(R.id.left_drawer);
+			drawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+			close = getResources().getString(R.string.drawer_close);
+			
+			
+			getActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + close + "</font>"));
+			header = getLayoutInflater().inflate(R.layout.header, null);
+			drawerList.addHeaderView(header);
+		    
+		    iconos = getResources().obtainTypedArray(R.array.navigation_iconos);
+			options = getResources().getStringArray(R.array.options);
+			
+			itemsMenu = new ArrayList<ItemMenu>();
+	        itemsMenu.add(new ItemMenu(options[0], iconos.getResourceId(0, -1)));
+	        itemsMenu.add(new ItemMenu(options[1], iconos.getResourceId(1, -1)));
+	        itemsMenu.add(new ItemMenu(options[2], iconos.getResourceId(2, -1)));
+	        itemsMenu.add(new ItemMenu(options[3], iconos.getResourceId(3, -1)));
+
+	        navigationAdapter = new NavigationAdapter(this, itemsMenu);
+	        drawerList.setAdapter(navigationAdapter);
+		 
+		    drawerToggle = new ActionBarDrawerToggle(this,drawerLayout,R.drawable.ic_drawer,R.string.drawer_open,R.string.drawer_close){
+		       
+					     public void onDrawerClosed(View view) {
+//					    	 getActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + close + "</font>"));
+					                invalidateOptionsMenu(); 
+					     }
+					     
+					     public void onDrawerOpened(View drawerView) {
+//					    	 getActionBar().setTitle(Html.fromHtml("<font color=\"#FFFFFF\">" + open + "</font>"));
+					                invalidateOptionsMenu(); 
+					     }
+		     };
+		     drawerLayout.setDrawerListener(drawerToggle); 
+		     getActionBar().setDisplayHomeAsUpEnabled(true);
+		     getActionBar().setHomeButtonEnabled(true);   
 		}
-		
-		@Override
-		public boolean onKeyDown(int keyCode, KeyEvent event) {
-		    if (keyCode == KeyEvent.KEYCODE_BACK ) {
-		    	Toast.makeText(this, "Alaksjkaljs:", Toast.LENGTH_SHORT).show();
-		    }
-		    return super.onKeyDown(keyCode, event);
-		}
-		
+			
 }
 	
 	
